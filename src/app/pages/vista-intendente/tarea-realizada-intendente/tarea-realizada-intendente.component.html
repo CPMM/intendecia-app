@@ -1,0 +1,124 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Información de tarea realizada: {{tarea['tarea']['nombre']}}</h3>
+                <!-- <a class="btn btn-link" [routerLink]="['/iniciointendente']">Regresar</a> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row mt-5">
+        <div class="col-lg-12">
+            <p class="alert alert-success" *ngIf="!tarea.queja">
+                Esta tarea no tiene queja
+            </p>
+            <p class="alert alert-danger" *ngIf="tarea.queja">
+                Esta tarea tiene queja: 
+                <span *ngIf="tarea.queja">
+                    Comentario: {{tarea.queja.comentario}}
+                    <button *ngIf="tarea.queja['fotos']" type="button" class="btn btn-warning ml-3" data-toggle="modal" data-target="#verfotomodal">
+                        Ver evidencia
+                    </button>
+                </span>
+            </p>
+        </div>
+    </div>
+
+
+<div class="row mt-5" *ngIf="tarea">
+    <div class="col-lg-6">
+        <h5>Información de la tarea</h5>
+        <b>Nombre:</b>
+        <p>{{tarea['tarea']['nombre']}}</p>
+        <b>Descripción</b>
+        <p>{{tarea['tarea']['descripcion']}}</p>
+        <b>Comentarios del intendente</b>
+        <p>{{tarea['comentario']}}</p>
+
+        <div *ngIf="tarea.fotos">
+            <div id="fotos" class="carousel slide center text-center" data-ride="carousel"
+                *ngIf="tarea['fotos'].length>0">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{{url}}/{{tarea['fotos'][0]}}" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item" *ngFor="let f of tarea['fotos']">
+                        <img src="{{url}}/{{f}}" class="d-block w-100" alt="...">
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#fotos" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#fotos" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+            <span *ngIf="tarea['fotos'].length>0">
+                Fotos de la tarea: {{tarea['tarea']['area']['nombre']}}
+            </span>
+        </div>
+
+        <p class="alert alert-warning" *ngIf="!tarea['fotos']">
+            Esta tarea no tiene fotos de evidencia
+        </p>
+
+    </div>
+    <div class="col-lg-6" *ngIf="tarea.tarea.area">
+        <h5>Información del area</h5>
+        <b>nombre</b>
+        <p>{{tarea['tarea']['area']['nombre']}}</p>
+        <b>Descripción</b>
+        <p>{{tarea['tarea']['area']['descripcion']}}</p>
+        <div id="fotos2" class="carousel slide center text-center" data-ride="carousel"
+            *ngIf="tarea['tarea']['area']['fotos'].length>0">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="{{url}}/{{tarea['tarea']['area']['fotos'][0]}}" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item" *ngFor="let f of tarea['tarea']['area']['fotos']">
+                    <img src="{{url}}/{{f}}" class="d-block w-100" alt="...">
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#fotos2" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#fotos2" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        <span *ngIf="tarea['tarea']['area']['fotos'].length>0">
+            Fotos del area: {{tarea['tarea']['area']['nombre']}}
+        </span>
+        <p class="alert alert-warning" *ngIf="tarea['tarea']['area']['fotos'].length<1">
+            El area donde se realiza esta tarea no tiene fotos
+        </p>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="verfotomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img [src]="url+'/'+tarea.queja['fotos']" alt="..." class="img-thumbnail">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

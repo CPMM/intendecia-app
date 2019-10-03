@@ -1,0 +1,14 @@
+
+<form>
+    <div class="form-group">
+      <label for="">Subir fotografia</label>
+      <input type="file" class="form-control" (change)="addFotoArray($event.target.files[0])">
+    </div> 
+    <button class="btn btn-success" [disabled]="fotos.length<1" (click)="subirFotos()" >Subir fotos</button>
+  </form>
+  
+  <div id="fotografias">
+    <ul>
+      <li *ngFor="let f of fotos">{{f.name}}</li>
+    </ul>
+  </div>

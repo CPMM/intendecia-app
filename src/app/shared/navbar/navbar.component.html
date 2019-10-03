@@ -1,0 +1,53 @@
+<!-- Image and text -->
+<nav class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="#">
+    <img src="assets/img/logo.png" width="50" height="50" class="d-inline-block align-content-center" alt="">
+    CONTROL DE INTENDENCIA
+  </a>
+  <!-- <span class="navbar-text">
+    <img src="assets/img/2021.png" width="40" height="40" class="d-inline-block align-top" alt="">
+  </span> -->
+</nav>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav" *ngIf="usuario">
+    <!-- Menu para el administrador  -->
+    <ul class="navbar-nav" *ngIf="usuario.role == 'admin'">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/inicio']" routerLinkActive="active">INICIO <span
+            class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/usuarios']" routerLinkActive="active">USUARIOS</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/areas']" routerLinkActive="active">ÁREAS</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/tareas']" routerLinkActive="active">TAREAS</a>
+      </li>
+    </ul>
+    <!-- Fin de menu para el administrador -->
+
+    <!-- Menu para el intendente  -->
+    <ul class="navbar-nav" *ngIf="usuario.role == 'intendente'">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/iniciointendente']" routerLinkActive="active">INICIO</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/trintendente']" routerLinkActive="active">TAREAS</a>
+        </li>
+    </ul>
+    <!-- Fin de menu para el indentende -->
+
+
+    <div class="ml-auto">
+      <label>{{usuario.nombre}}</label>
+      <button class="btn btn-outline-dark ml-3" title="Salir" (click)="salir()"> <i class="fa fa-sign-out-alt"></i></button>
+    </div>
+  </div>
+</nav>

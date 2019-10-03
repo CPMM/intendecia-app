@@ -1,0 +1,211 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title"><i class="fa fa-users"></i> USUARIOS</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <button class="btn btn-link" data-toggle="modal" data-target="#addUsuarioModal"><i class="fa fa-user-plus"></i> AGREGAR USUARIO</button>
+            <button class="btn btn-link" [routerLink]="['/asignartareas']" routerLinkActive="router-link-active" ><i class="fa fa-check-square"></i> ASIGNAR TAREA</button>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input class="form-control" [(ngModel)]="busqueda" type="text" placeholder="Nombre de usuario para consultar">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- {{usuario_select | json}} -->
+
+<div class="row mt-4">
+  <div class="col-lg-12">
+    <div class="table-responsive">
+      <table class="table table-bordered  table-hover">
+        <thead class="bg-dark text-white">
+          <tr>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>Usuario</th>
+            <th>Rol</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of usuarios | busquedaUsuario:busqueda | paginate: { itemsPerPage: 10, currentPage: p }">
+            <td>{{u.nombre}}</td>
+            <td>{{u.telefono}}</td>
+            <td>{{u.correo}}</td>
+            <td>{{u.usuario}}</td>
+            <td>
+              <span *ngIf="u.role=='admin'" class="badge badge-primary">
+                  {{u.role}}
+              </span>
+              <span *ngIf="u.role=='intendente'" class="badge badge-secondary">
+                  {{u.role}}
+              </span>
+            </td>
+            <td>
+              <button (click)="seleccionar(u._id)" class="btn btn-link" data-toggle="modal" data-target="#modificarModal"
+                ><i class="fa fa-edit"></i> Modificar</button>
+              <button *ngIf="u.role=='intendente'" (click)="seleccionar(u._id)" class="btn btn-link" data-toggle="modal" data-target="#tareasModal"
+                ><i class="fa fa-eye"></i> Ver tareas</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center">
+          <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODALS -->
+
+<!-- MODICIFAR USUARIO -->
+<div class="modal fade" id="modificarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modificar usuario {{usuario_select.nombre}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #usuarioForm="ngForm">
+          <div class="form-group">
+            <label>Nombre:</label>
+            <input type="text" class="form-control" name="nombre" #nombre="ngModel" [(ngModel)]="usuario_select.nombre" required>
+          </div>
+          <div class="form-group">
+            <label>Telefono:</label>
+            <input type="text" class="form-control" name="telefono" #telefono="ngModel" [(ngModel)]="usuario_select.telefono" required>
+          </div>
+          <div class="form-group">
+            <label>Correo:</label>
+            <input type="text" class="form-control" name="correo" #correo="ngModel" [(ngModel)]="usuario_select.correo" required>
+          </div>
+          <div class="form-group">
+            <label>Usuario:</label>
+            <input type="text" class="form-control" name="usuario" #usuario="ngModel" [(ngModel)]="usuario_select.usuario" required>
+          </div>
+          <div class="form-group">
+            <label>Password:</label>
+            <input type="text" class="form-control" name="password" #password="ngModel" [(ngModel)]="usuario_select.password" required>
+          </div>
+          <div class="form-group">
+            <label>Rol:</label>
+            <select disabled name="rol" class="form-control" name="rol" #rol="ngModel" [(ngModel)]="usuario_select.role">
+              <option value="admin">Administrador</option>
+              <option value="intendente" selected="selected">Intendente</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" [disabled]="!usuarioForm.valid" (click)="updateUsuario()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FIN MODIFICAR USUARIOS -->
+
+<!-- VER TUSUARIOS DE USUARIO -->
+<div class="modal fade" id="tareasModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Listado de de tareas asignadas a {{usuario_select.nombre}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table">
+          <table class="table table-bordered  table-hover">
+            <thead class="bg-dark text-white">
+              <tr>
+                <th>Area</th>
+                <th>Nombre tarea</th>
+                <th>Descripcion de tarea</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="tareas">
+              <tr *ngFor="let t of tareas | tareaXusuario:usuario_select._id">
+                <td>{{t['area']['nombre']}}</td>
+                <td>{{t.nombre}}</td>
+                <td>{{t['descripcion']}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FIN VER TUSUARIOS DE USUARIO -->
+
+<!-- AGREGAR USUARIO -->
+<div class="modal fade" id="addUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar usuario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #usuarioForm="ngForm">
+          <div class="form-group">
+            <label>Nombre:</label>
+            <input type="text" class="form-control" name="nombre" #nombre="ngModel" [(ngModel)]="usuario_nuevo.nombre" required>
+          </div>
+          <div class="form-group">
+            <label>Telefono:</label>
+            <input type="text" class="form-control" name="telefono" #telefono="ngModel" [(ngModel)]="usuario_nuevo.telefono" required>
+          </div>
+          <div class="form-group">
+            <label>Correo:</label>
+            <input type="text" class="form-control" name="correo" #correo="ngModel" [(ngModel)]="usuario_nuevo.correo" required>
+          </div>
+          <div class="form-group">
+            <label>Usuario:</label>
+            <input type="text" class="form-control" name="usuario" #usuario="ngModel" [(ngModel)]="usuario_nuevo.usuario" required>
+          </div>
+          <div class="form-group">
+            <label>Password:</label>
+            <input type="text" class="form-control" name="password" #password="ngModel" [(ngModel)]="usuario_nuevo.password" required>
+          </div>
+          <div class="form-group">
+            <label>Rol:</label>
+            <select name="rol" class="form-control" name="rol" #rol="ngModel" [(ngModel)]="usuario_nuevo.role">
+              <option value="admin">Administrador</option>
+              <option value="intendente" selected="selected">Intendente</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" [disabled]="false" (click)="addUsuario()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FIN AGREGAR USUARIO -->

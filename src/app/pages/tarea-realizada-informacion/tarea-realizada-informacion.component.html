@@ -1,0 +1,154 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">Información de tarea realizada: {{tarea['tarea']['nombre']}}</h3>
+        <a class="btn btn-link" *ngIf="usuario.role == 'admin'" [routerLink]="['/tareas']">Regresar</a>
+        <a class="btn btn-link" *ngIf="usuario.role == 'intendente'" [routerLink]="['/trintendente']">Regresar</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-lg-12">
+    <p class="alert alert-success" *ngIf="!tarea.queja">
+      Esta tarea no tiene queja
+      <button *ngIf="usuario.role =='admin'" type="button" class="btn btn-warning ml-3" data-toggle="modal" data-target="#quejamodal">
+        Añadir queja
+      </button>
+    </p>
+    <p class="alert alert-danger" *ngIf="tarea.queja">
+      Esta tarea tiene queja
+    </p>
+  </div>
+</div>
+
+<div class="row mt-5" *ngIf="tarea">
+  <div class="col-lg-6">
+    <h5>Información de la tarea</h5>
+    <b>Nombre:</b>
+    <p>{{tarea['tarea']['nombre']}}</p>
+    <b *ngIf="tarea.tarea.area">Area:</b>
+    <p *ngIf="tarea.tarea.area">{{tarea.tarea['area']['nombre']}}</p>
+    <b>Descripción</b>
+    <p>{{tarea['tarea']['descripcion']}}</p>
+    <b>Comentarios del intendente</b>
+    <p>{{tarea.comentario}}</p>
+    <b *ngIf="tarea.queja">Queja: </b>
+    <p *ngIf="tarea.queja">
+      Comentario: {{tarea.queja.comentario}}
+      <button *ngIf="!tarea.queja.fotos && usuario.role=='admin'" type="button" class="btn btn-warning ml-3" data-toggle="modal" data-target="#fotomodal">
+        Añadir evidencia
+      </button>
+      <button *ngIf="tarea.queja.fotos" type="button" class="btn btn-warning ml-3" data-toggle="modal" data-target="#verfotomodal">
+        Ver evidencia
+      </button>
+    </p>
+  </div>
+  <div class="col-lg-6">
+    <div id="fotos" class="carousel slide center text-center" data-ride="carousel" *ngIf="tarea.fotos">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="{{url}}/{{tarea.fotos[0]}}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item" *ngFor="let f of tarea.fotos">
+          <img src="{{url}}/{{f}}" class="d-block w-100" alt="...">
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#fotos" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#fotos" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+    <span>
+      Fotos de la tarea: {{tarea.tarea['nombre']}}
+    </span>
+    <p class="alert alert-warning" *ngIf="!tarea.fotos">
+      Esta tarea no tiene fotos de evidencia
+    </p>
+  </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="quejamodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Añadir queja de tarea realizada</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label>Comentario: </label>
+            <textarea class="form-control" name="descripcion" [(ngModel)]="comentario_queja" rows="4"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" [disabled]="comentario_queja=='' " (click)="addQueja()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="fotomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="">Foto de evidencia</label>
+            <input type="file" class="form-control-file" (change)="changeFotoQueja($event.target.files[0])">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" [disabled]="foto_queja==null   " (click)="addFotoQueja()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="verfotomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img [src]="url+'/'+tarea.queja['fotos']" alt="..." class="img-thumbnail">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

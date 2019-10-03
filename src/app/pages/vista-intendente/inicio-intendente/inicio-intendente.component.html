@@ -1,0 +1,62 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">Listado de tareas</h3> <br>
+        <div class="alert alert-info">
+          <p *ngIf="tareasArea">Usted tiene {{tareasArea.length}} tarea(s) asignada(s)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+      <b>Tareas Asignadas:</b>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Tarea</th>
+              <th>Area</th>
+              <th>Ver</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of tareasArea">
+              <th>{{t.nombre}}</th>
+              <th>{{t.area['nombre']}}</th>
+              <th>
+                <a class="btn btn-link" [routerLink]="['/realizarTarea', t._id]" > <i class="fa fa-eye"></i> Ver </a>
+              </th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <b>Tareas realizadas en el dia:</b>
+      <table class="table table-bordered table-hover" *ngIf="tareasRalizadasDia.length>=1">
+        <thead>
+          <tr>
+            <th>Tarea</th>
+            <th>Area</th>
+            <th>Ver</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of tareasRalizadasDia">
+            <td>{{t.tarea['nombre']}}</td>
+            <td>{{t.tarea['area']['nombre']}}</td>
+            <td>
+                <a class="btn btn-link" [routerLink]="['/trintendente', t._id]" > <i class="fa fa-eye"></i> Ver </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="alert alert-warning" *ngIf="tareasRalizadasDia.length<1">
+        <p>No tiene tareas realizadas hoy</p>
+      </div>
+    </div>
+  </div>

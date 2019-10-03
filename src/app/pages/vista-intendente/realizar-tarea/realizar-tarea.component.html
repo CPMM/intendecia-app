@@ -1,0 +1,72 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">Información de tarea asignada</h3>
+        <a [routerLink]="['/iniciointendente']">Regresar</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-lg-6">
+    <h5>Información de la tarea</h5>
+    <b>Nombre:</b>
+    <p>{{tarea.nombre}}</p>
+    <b>Descripción</b>
+    <p>{{tarea.descripcion}}</p>
+    <b *ngIf="tarea.fecha_ultima">Ultima ejecución</b>
+    <p *ngIf="tarea.fecha_ultima">{{tarea.fecha_ultima}}</p>
+    <hr>
+    <h5>Información del area</h5>
+    <b>nombre</b>
+    <p>{{tarea['area']['nombre']}}</p>
+    <b>Descripción</b>
+    <p>{{tarea['area']['descripcion']}}</p>
+  </div>
+  <div class="col-lg-6">
+    <div id="fotos" class="carousel slide center text-center" data-ride="carousel" *ngIf="tarea['area']['fotos'].length>=1">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="{{url}}/{{tarea['area']['fotos'][0]}}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item" *ngFor="let f of tarea['area']['fotos']">
+          <img src="{{url}}/{{f}}" class="d-block w-100" alt="...">
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#fotos" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#fotos" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+    <span *ngIf="tarea['area']['fotos'].length>=1">
+      Fotos del area:  {{tarea.area['nombre']}}
+    </span>
+    <p class="alert alert-warning" *ngIf="tarea['area']['fotos'].length<=0">
+      El area donde se realiza esta tarea no tiene fotos
+    </p>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-lg-12">
+    <p class="alert alert-warning" *ngIf="!verSiRealizada()">
+      Esta tarea no se ha realizado el dia de hoy
+    </p>
+    <form *ngIf="!verSiRealizada()">
+      <div class="form-group">
+        <label for="">Comentario acerca de la tarea:</label>
+        <textarea class="form-control" name="comoentario" [(ngModel)]="tareaRealizada.comentario" rows="4"
+          required></textarea>
+      </div>
+      <button class="btn btn-success" [disabled]="!tareaRealizada.comentario" (click)="realizar()">Marcar tarea como
+        realizada</button>
+    </form>
+  </div>
+</div>
+

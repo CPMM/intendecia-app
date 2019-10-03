@@ -1,0 +1,100 @@
+<div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Listado de tareas realizadas</h3>
+          <div class="row">
+            <div class="col-lg-12">
+                <label for="">Buscar por nombre de tarea</label>
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" [(ngModel)]="filtros.nombreTarea" placeholder="Nombre de tarea">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" data-toggle="collapse"
+                      data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Filtros</button>
+                  </div>
+                </div>
+            </div>
+          </div>
+          <div class="form-group">
+            
+  
+            <!-- QuitarFiltros -->
+            <span class="mr-4" *ngIf="filtros.nombreTarea !=''"> Tarea especifica <button class="btn btn-link"
+                (click)="quitarFiltro('nombreTarea')"><i class="fa fa-trash"></i></button></span>
+            <span class="mr-4" *ngIf="filtros.fechaDesde !=''"> Desde la fecha <button class="btn btn-link"
+                (click)="quitarFiltro('fechaDesde')"> <i class="fa fa-trash"></i> </button></span>
+            <span class="mr-4" *ngIf="filtros.fechaHasta !=''"> Hasta la fecha <button class="btn btn-link"
+                (click)="quitarFiltro('fechaHasta')"> <i class="fa fa-trash"></i></button></span>
+            <span class="mr-4" *ngIf="filtros.nombreIntendente !=''"> Intendente especifico <button class="btn btn-link"
+                (click)="quitarFiltro('nombreIntendente')"><i class="fa fa-trash"></i></button></span>
+            <span class="mr-4" *ngIf="filtros.nombreArea !=''"> Area especifica <button class="btn btn-link"
+                (click)="quitarFiltro('nombreArea')"><i class="fa fa-trash"></i></button></span>
+            <span class="mr-4"
+              *ngIf="filtros.nombreArea!='' || filtros.fechaDesde!='' || filtros.fechaHasta!='' || filtros.nombreIntendente!='' || filtros.nombreArea!=''">Todos
+              los filtros <button class="btn btn-link" (click)="quitarFiltro('todos')"><i
+                  class="fa fa-trash"></i></button></span>
+  
+            <!-- Fin de quitarFiltros -->
+          </div>
+          <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+              <div class="row">
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label>Desde la fecha:</label>
+                    <input type="date" class="form-control" [(ngModel)]="filtros.fechaDesde">
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label>Hasta la fecha:</label>
+                    <input type="date" class="form-control" [(ngModel)]="filtros.fechaHasta">
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  
+
+  <div class="table-responsive mt-5">
+    <table class="table table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Tarea</th>
+          <th scope="col">Area</th>
+          <th scope="col">Intendente</th>
+          <th scope="col">Comentarios</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of tareasRealizadas 
+        | busqueda: { busqueda:filtros.nombreTarea, termino:termino }
+        | realizadaHastaFecha: filtros.fechaHasta
+        | realizadaIntenente: filtros.nombreIntendente
+        | realizadaArea: filtros.nombreArea
+        | paginate: { itemsPerPage: 10, currentPage: p }
+        ">
+          <td scope="row">{{t.tarea['nombre']}}</td>
+          <td scope="row">{{t['tarea']['area']['nombre']}}</td>
+          <td scope="row">{{t['intendente']['nombre']}}</td>
+          <td scope="row">{{t['comentario']}}</td>
+          <td scope="row">{{t['fecha']}}</td>
+          <td scope="row">
+            <a [routerLink]="['/trintendenteadmin', t['_id']]" routerLinkActive="router-link-active" > <i class="fa fa-eye"></i> Detalles</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="text-center">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  
+    </div>
+  </div>
